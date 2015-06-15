@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<link href="/assets/style.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+body{ 
+    background:url(/assets/blue-bg.jpg) no-repeat right top #0096ce;
+}
+</style>
+</head>
+
+<body>
+<div id="dialog-form" title="Sign up" style="display:none;">
+    <%= render partial: "devise/registrations/register",locals: { resource: User.new }%>
+</div>
+<div class="login-main">
+  <div class="login-logo">
+      <img src="/assets/taaspro-logo.png" width="170" height="114" alt="taaspro" />
+  </div>
+  <div class="login-box">
+    <div class="login-box-inr1">
+      <h1>Log In</h1>
+      <div class="login-box-inr1-cnt">
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <% flash.each do |name, msg| %>
+            <%= content_tag :div, msg, :id => "flash_#{name}",class: "ui-state-highlight",style: "color:#F00; line-height:20px; padding-left:5px; margin-top:7px;" %>
+          <% end %>
+
+           <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:5px;">
+            <tr>
+              <td>Email</td>
+              <td><%= f.email_field :email, autofocus: true, class: "login-form-styl" %></td>
+              <td>Password</td>
+              <td><%= f.password_field :password, autocomplete: "off", class: "login-form-styl" %></td>
+            </tr>
+          </table>
+          <table width="480" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:8px;">
+            <tr>
+             <% if devise_mapping.rememberable? -%>
+              <td valign="middle" width="100"><label class="login-lbl"><%= f.check_box :remember_me %> Remember me</label></td>
+              <%end%>
+             <td><%#= link_to "Forgot your password?", new_password_path(resource_name), {class: 'forgot_password'} %></td>
+             <td>
+              <%= link_to "Forgot your password?", '#', {class: 'forgot_password'} %>
+             </td>
+             <td id="processing"></td>
+              <%#= f.simple_captcha :label => "Enter numbers..", :placeholder => 'Enter the text shown in the image' %>
+
+              <td align="right"><%= f.submit "Log in",class: "login-btn" %></td>
+          </tr>
+          </table>
+       <%end%>
+      </div>
+    </div>
+    <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+    <div class="login-box-inr2">
+      <table width="85%" border="0" cellspacing="0" cellpadding="0" style="margin:33px 0px 0px 12px;">
+        <tr>
+            <td align="center">
+                <h5>You are not a member?</h5>
+                <h6>Please join us now for more...</h6>
+            </td>
+        </tr>
+        <tr>
+          <td align="center" height="65" valign="middle"><input type="button" class="login-btn2" id= "create-user" value="Register"/></td>
+        </tr>
+      </table>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+
+
+<script>
+  $(function() {
+    var dialog,form;
+    function submitForm() {
+      dialog.find("form").submit()
+    }
+
+    function clearForm(){
+      $("#dialog-form").html("<%= escape_javascript(render :partial => 'devise/registrations/register', locals: { resource: User.new })%>");
+    }
+  
+    dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 920,
+      modal: true,
+      open: function (event, ui) {
+        $('.ui-widget-overlay').addClass('override');
+      },
+      buttons: {
+          "Register": submitForm,
+          Cancel: function() {
+            dialog.dialog( "close" );
+          }
+      },
+      close: clearForm
+    });
+
+    $(document).on( "click", '#create-user', function() {
+      dialog.dialog( "open" );
+    });
+  });
+
+  $(document).on("click",".forgot_password", function (e){
+    var email = $(user_email).val()
+    $('#processing').html('<img src="/assets/ajax-loader.gif">');
+    $.ajax('/users/password', {
+      type: 'POST',
+      datatype: 'json',
+      data: {email: email},
+      success: function(data, textStatus, jqHXR) {
+        alert(data);
+        $('#processing').html('');
+      }
+    });
+  });
+
+  // $(document).on("click",".forgot_password", function (e){
+  //   e.preventDefault();
+  //   var tag = $("<div id='change-password-form'></div>"),
+  //     url = $(this).attr('href');
+  //   $.ajax({
+  //     url: url,
+  //     success: function(data) {
+  //       tag.html(data).dialog({modal: true,
+  //         height: 180,
+  //         width: 420,
+  //         title: 'Forgot Your Password?',
+  //         beforeClose: function(event, ui) { 
+  //           window.location.reload();
+  //         },
+  //         buttons: [
+  //           {
+  //             text: "Send me reset password instructions",
+  //             click: submitChangePasswordForm
+  //           },
+  //           {
+  //             text: "Cancel",
+  //             click: function (event, ui) {
+  //               $(this).dialog('close');
+  //             }
+  //           }
+  //         ]
+  //       }).
+  //       dialog('open');
+  //     }
+  //   });
+  // })
+
+  // function submitChangePasswordForm(){
+  //   $(this).find("form").submit()
+  // }
+
+  </script>
+  </body>
+
+  </html>

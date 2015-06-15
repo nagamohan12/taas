@@ -1,0 +1,37 @@
+== README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+*install gitsvn
+
+Things you may want to cover:
+checkout project:
+git svn clone http://172.16.0.28/repos/solutions/taas -T trunk -b branches -t tags
+
+* Ruby version
+	rvm use 2.1.2
+	cd taas/portal
+	bundle install
+
+* System dependencies
+
+* Configuration
+	cp config/database.example.yml config/database.yml
+	Update your db settings in database.yml
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
+
+
+Please feel free to use a different markup language if you do not plan to run
+<tt>rake doc:app</tt>.
